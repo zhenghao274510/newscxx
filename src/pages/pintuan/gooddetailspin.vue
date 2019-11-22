@@ -523,7 +523,7 @@ export default {
         success: function(res) {
           if (res.confirm) {
             wx.navigateTo({
-              url: "/pages/bind/bindtell"
+              url: "/pages/author/index"
             });
           }
         }

@@ -1,8 +1,8 @@
 {
   "pages": [
+    "pages/tarba/home",
     "pages/author/index",
     "pages/tarba/person",
-    "pages/tarba/home",
     "pages/tarba/cart",
     "pages/tarba/class",
     "pages/tarba/nearyShop"
@@ -201,8 +201,6 @@
     "van-count-down":"/static/vant/count-down/index",
     "van-field":"/static/vant/field/index",
     "van-popup":"/static/vant/popup/index"
-
-
   },
   "permission": {
     "scope.userLocation": {

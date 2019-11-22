@@ -40,13 +40,15 @@ export default {
     wx.setNavigationBarTitle({
       title: "附近商家"
     });
-    this.cid = JSON.parse(wx.getStorageSync("user")).cid;
     if (wx.getStorageSync("point")) {
       this.center = JSON.parse(wx.getStorageSync("point"));
       console.log(this.center);
     }
   },
   mounted() {
+      if(wx.getStorageSync("user")){
+      this.cid = JSON.parse(wx.getStorageSync("user")).cid;
+    }
     if (this.center != {}) {
       this.nearbyShop();
     }

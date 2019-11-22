@@ -8,7 +8,7 @@
     </div>
     <div class="tenants-zi">
       <div class="steps" ref="list">
-        <h3>步骤:</h3>
+        <h3>入驻步骤:</h3>
         <rich-text :nodes="txt"></rich-text>
       </div>
       <button class="downLoad" @click="downLoad">复制</button>

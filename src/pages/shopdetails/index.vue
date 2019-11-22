@@ -297,19 +297,19 @@ export default {
     nouser() {
       wx.showModal({
         title: "温馨提醒！",
-        content: "你还没有绑定手机号,请先绑定手机号,确认信息",
+        content: "你还没有登录，请先登录",
         showCancel: false,
         success: function(res) {
           if (res.confirm) {
             wx.navigateTo({
-              url: "/pages/bind/bindtell"
+              url: "/pages/author/index"
             });
           }
         }
       });
     },
     stores() {
-      if (this.cid == undefined) {
+      if (this.cid == undefined || this.cid=="") {
         this.nouser();
       } else {
         if (this.store == "1") {

@@ -133,16 +133,17 @@ export default {
   onShow() {
     if (wx.getStorageSync("user")) {
       this.cid = JSON.parse(wx.getStorageSync("user")).cid;
-
-      if (this.cid == undefined) {
+     }
+      if (this.cid == undefined ||this.cid=="") {
+        this.dataList.length=0;
         wx.showModal({
           title: "温馨提醒！",
-          content: "你还没有绑定手机号,请先绑定手机号,确认信息",
+          content: "你还没有登录，请先登录",
           showCancel: true,
           success: function(res) {
             if (res.confirm) {
               wx.navigateTo({
-                url: "/pages/bind/bindtell"
+                url: "/pages/author/index"
               });
             } else if (res.cancel) {
               console.log("quxiao");
@@ -155,7 +156,7 @@ export default {
         this.gounum();
         // this.gocarlist(this.cid);
       }
-    }
+   
   },
   methods: {
     add(item) {

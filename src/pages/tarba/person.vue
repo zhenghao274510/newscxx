@@ -137,20 +137,20 @@
             <div style="font-size:14px;background:#fff;">山城乡鲜服务</div>
           </div>
           <ul style="border-radius:0 0 5px 5px ;">
-            <li class="one">
-              <a href="/pages/my/shoucang">
+            <li class="one" @click="gotowhere(0)">
+              <a href="#">
                 <img src="/static/img/my_shoucang.png" alt />
               </a>
               <span>我的收藏</span>
             </li>
-            <li class="one">
-              <a href="/pages/my/mypingjia">
+            <li class="one" @click="gotowhere(1)">
+              <a href="#">
                 <img src="/static/img/my_pingjia.png" alt />
               </a>
               <span>我的评价</span>
             </li>
-            <li class="one">
-              <a href="/pages/address/myadd">
+            <li class="one" @click="gotowhere(2)">
+              <a href="#">
                 <img src="/static/img/my_dizhi.png" alt />
               </a>
               <span>地址管理</span>
@@ -218,18 +218,16 @@ export default {
       title: "我的"
     });
     this.xiaoshow = false;
-    if (wx.getStorageSync("user")) {
+     if (wx.getStorageSync("user")) {
       this.cid = JSON.parse(wx.getStorageSync("user")).cid;
-      // if(this.cid!=undefined){
-      //   this.showText();
-      // }
+    }else{
+      this.nouser();
     }
   },
   onShow() {
-    if (this.cid == undefined) {
-      this.nouser();
-    } else {
-      this.gouserInfo();
+    if (wx.getStorageSync("user")) {
+      this.cid = JSON.parse(wx.getStorageSync("user")).cid;
+       this.gouserInfo();
       this.infoList();
     }
   },
@@ -241,12 +239,12 @@ export default {
     nouser() {
       wx.showModal({
         title: "温馨提醒！",
-        content: "你还没有绑定手机号,请先绑定手机号,确认信息",
-        showCancel: false,
+        content: "你还没有登录，请先登录",
+        showCancel: true,
         success: function(res) {
           if (res.confirm) {
             wx.navigateTo({
-              url: "/pages/bind/bindtell"
+              url: "/pages/author/index"
             });
           } else if (res.cancel) {
             console.log("取消");
@@ -323,59 +321,64 @@ export default {
       }
     },
     learCenter() {
-      if(this.first){
-        this.first=false;
+         if (this.cid == undefined || this.cid=="") {
+        this.nouser();
+      } else {
+        if (this.first) {
+        this.first = false;
         let parmas = {
           cmd: "leaderInfo",
-        cid: this.cid
-      };
-      Request.postRequest(parmas)
-        .then(res => {
-          console.log(res);
-          if (res.result == 0) {
-            this.state = res.state;
-            this.first=true;
-            if (res.state == 1) {
-              // this.text = "团长中心";
-              wx.setStorageSync("ISLEADER", res.state);
-              wx.setStorageSync("leaderInfo", JSON.stringify(res));
-            }
-            let num = Number(this.state);
-            switch (num) {
-              case 0:
-                wx.showToast({
-                  title: "正在审核中!请稍等...",
-                  icon: "none"
-                });
-                break;
-              case 1:
-                setTimeout(() => {
-                  wx.navigateTo({
-                    url: "/pages/my/tuanzhangcenter/tuanzhangcenter"
+          cid: this.cid
+        };
+        Request.postRequest(parmas)
+          .then(res => {
+            console.log(res);
+            if (res.result == 0) {
+              this.state = res.state;
+              this.first = true;
+              if (res.state == 1) {
+                // this.text = "团长中心";
+                wx.setStorageSync("ISLEADER", res.state);
+                wx.setStorageSync("leaderInfo", JSON.stringify(res));
+              }
+              let num = Number(this.state);
+              switch (num) {
+                case 0:
+                  wx.showToast({
+                    title: "正在审核中!请稍等...",
+                    icon: "none"
                   });
-                }, 30);
+                  break;
+                case 1:
+                  setTimeout(() => {
+                    wx.navigateTo({
+                      url: "/pages/my/tuanzhangcenter/tuanzhangcenter"
+                    });
+                  }, 30);
 
-                break;
-              case 2:
-                wx.showToast({
-                  title: "你的审核没有通过，请重新填写个人信息",
-                  icon: "none"
-                });
-                setTimeout(() => {
+                  break;
+                case 2:
+                  wx.showToast({
+                    title: "你的审核没有通过，请重新填写个人信息",
+                    icon: "none"
+                  });
+                  setTimeout(() => {
+                    wx.navigateTo({
+                      url: "/pages/my/tuanzhangcenter/restuanzhang"
+                    });
+                  }, 500);
+                  break;
+                case 3:
                   wx.navigateTo({
                     url: "/pages/my/tuanzhangcenter/restuanzhang"
                   });
-                }, 500);
-                break;
-              case 3:
-                wx.navigateTo({
-                  url: "/pages/my/tuanzhangcenter/restuanzhang"
-                });
+              }
             }
-          }
-        })
-        .catch(err => {});
+          })
+          .catch(err => {});
       }
+      }
+    
     },
     // learCenter() {
     //   let num = Number(this.state);
@@ -412,7 +415,7 @@ export default {
     //   }
     // },
     goMsg() {
-      if (this.cid == undefined) {
+      if (this.cid == undefined || this.cid=="") {
         this.nouser();
       } else {
         wx.navigateTo({
@@ -421,12 +424,21 @@ export default {
       }
     },
     message() {
-      wx.navigateTo({
+       if (this.cid == undefined || this.cid=="") {
+        this.nouser();
+      } else {
+         wx.navigateTo({
         url: "/pages/my/message"
       });
+      }
+
+     
     },
     gotoall(m) {
-      wx.setStorageSync("tarnum", "0");
+      if(this.cid==undefined ||this.cid==""){
+        this.nouser()
+      }else{
+           wx.setStorageSync("tarnum", "0");
       switch (m) {
         case 0:
           wx.navigateTo({ url: "/pages/order/all?id=" + 0 });
@@ -447,6 +459,26 @@ export default {
           wx.navigateTo({ url: "/pages/order/TuiShop?cid=" + this.cid });
           break;
       }
+      }
+   
+    },
+     gotowhere(m) {
+      if(this.cid==undefined ||this.cid==""){
+        this.nouser()
+      }else{
+      switch (m) {
+        case 0:
+          wx.navigateTo({ url: "/pages/my/shoucang"});
+          break;
+        case 1:
+          wx.navigateTo({ url: "/pages/my/mypingjia" });
+          break;
+        case 2:
+          wx.navigateTo({ url: "/pages/address/myadd" + "2" });
+          break;
+      }
+      }
+   
     }
   }
 };

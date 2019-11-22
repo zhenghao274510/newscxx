@@ -12,11 +12,11 @@
             <span v-if="btnState">s</span>
           </button>
         </div>
-        <div class="tel" style="border: none;background: none;">
-           <!-- <radio>我已阅读并同意<span style="color:'green'" > 《 用户协议》</span></radio> -->
+        <!-- <div class="tel" style="border: none;background: none;">
+           <radio>我已阅读并同意<span style="color:'green'" > 《 用户协议》</span></radio>
            <p></p>
          
-        </div>
+        </div> -->
         <div class="btn" @click="btn">确定</div>
       </div>
     </div>

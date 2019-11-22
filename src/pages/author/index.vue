@@ -10,15 +10,13 @@
         <p class="eng">Raw fruits and vegetables</p>
         <p class="china">【及时配送到家】</p>
       </div>
-        <button
-        v-if="no"
+      <button
         class="bottom"
         type="primary"
         open-type="getUserInfo"
         lang="zh_CN"
         @getuserinfo="bindGetUserInfo"
       >微信授权登录</button>
-
     </div>
   </div>
 </template>
@@ -40,22 +38,21 @@ export default {
   components: {},
   onLoad() {
     // 查看是否授权
-    wx.showLoading({
-      title: "加载中..."
-    });
-    if (wx.getStorageSync("user")) {
-      console.log("已授权");
-
-      setTimeout(() => {
-        wx.switchTab({
-          url: "../tarba/home"
-        });
-        wx.hideLoading();
-      }, 30);
-    } else {
-      this.no = true;
-      wx.hideLoading();
-    }
+    // wx.showLoading({
+    //   title: "加载中..."
+    // });
+    // if (wx.getStorageSync("user")) {
+    //   console.log("已授权");
+    //   setTimeout(() => {
+    //     wx.switchTab({
+    //       url: "../tarba/home"
+    //     });
+    //     wx.hideLoading();
+    //   }, 30);
+    // } else {
+    //   this.no = true;
+    //   wx.hideLoading();
+    // }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {},
@@ -64,13 +61,13 @@ export default {
   //方法集合
   methods: {
     bindGetUserInfo(e) {
-     
+      let self = this;
       console.log(e.mp.detail.userInfo);
       wx.setStorageSync("userlist", JSON.stringify(e.mp.detail.userInfo));
       wx.login({
         success: function(res) {
           console.log("用户code...." + res.code);
-          wx.setStorageSync('code',res.code);
+          wx.setStorageSync("code", res.code);
           let parmas = {
             cmd: "wxAuthLogin",
             code: res.code,
@@ -80,16 +77,20 @@ export default {
             if (res.result == 0) {
               console.log(res);
               let user = {};
-              if(res.cid!='' || res.cid!=undefined){
-                 user.cid=res.cid;
-              }              
-              user.openId = res.openId;
-              wx.setStorageSync("user", JSON.stringify(user));
-              setTimeout(() => {
-                wx.switchTab({
-                  url: "/pages/tarba/home"
-                });
-              }, 30);
+              if (res.cid != "" || res.cid != undefined) {
+                user.cid = res.cid;
+                user.openId = res.openId;
+                wx.setStorageSync("user", JSON.stringify(user));
+                setTimeout(() => {
+                  self.$router.go(-1);
+                }, 30);
+              } else {
+                user.openId = res.openId;
+                wx.setStorageSync("user", JSON.stringify(user));
+                setTimeout(() => {
+                  self.$router.replace("/pages/bind/bindtell");
+                }, 30);
+              }
             }
           });
         },
@@ -163,15 +164,15 @@ export default {
   color: rgba(241, 146, 0, 1);
   display: block;
 }
-.no{
+.no {
   position: relative;
 }
-.fromd{
+.fromd {
   position: absolute;
   top: 70rpx;
-  left:0;
-  right:0;
-  height:80rpx;
+  left: 0;
+  right: 0;
+  height: 80rpx;
 }
 
 .bottom {
