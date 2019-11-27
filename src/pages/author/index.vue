@@ -77,18 +77,17 @@ export default {
             if (res.result == 0) {
               console.log(res);
               let user = {};
-              if (res.cid != "" || res.cid != undefined) {
-                user.cid = res.cid;
-                user.openId = res.openId;
-                wx.setStorageSync("user", JSON.stringify(user));
-                setTimeout(() => {
-                  self.$router.go(-1);
-                }, 30);
-              } else {
-                user.openId = res.openId;
+              user.openId = res.openId;
+              if (res.cid==""||res.cid==undefined){
                 wx.setStorageSync("user", JSON.stringify(user));
                 setTimeout(() => {
                   self.$router.replace("/pages/bind/bindtell");
+                }, 30);
+              } else{
+                user.cid = res.cid;
+                wx.setStorageSync("user", JSON.stringify(user));
+                setTimeout(() => {
+                  self.$router.go(-1);
                 }, 30);
               }
             }
