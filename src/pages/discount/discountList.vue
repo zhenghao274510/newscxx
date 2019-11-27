@@ -49,6 +49,7 @@ export default {
       this.discountGoods(this.page);
    
   },
+  
   components: {
   },
   mounted() {

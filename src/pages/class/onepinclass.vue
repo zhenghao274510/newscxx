@@ -32,9 +32,9 @@
       </van-tabs>
     </div>
     <div class="no" v-if="show">暂没有搜索的商品</div>
-       <div class="loading" v-if="more">
-            <span>没有更多了</span>
-          </div>
+    <div class="loading" v-if="more">
+      <span>没有更多了</span>
+    </div>
   </div>
 </template>
 
@@ -56,14 +56,14 @@ export default {
       id: "",
       ink: "",
       direct: 100,
-      more:false
+      more: false
     };
   },
   components: {
     Recommendfen
   },
   onLoad(options) {
-          this.list = [];
+    this.list = [];
     this.id = JSON.parse(options.id).id;
     this.direct = JSON.parse(options.id).direct;
     wx.setNavigationBarTitle({
@@ -79,21 +79,23 @@ export default {
       return this.list;
     }
   },
-   onShareAppMessage() {
-     return this.$share.share()
-   },
-   onReachBottom() {
+  onShareAppMessage() {
+    return this.$share.share();
+  },
+  onReachBottom() {
     console.log("触底");
-    if (this.page < this.totalPage) {
-      this.page+=1;
-      this.initDta();
-    } else {
-      this.more = true;
+    if (this.list.length != 0) {
+      if (this.page < this.totalPage) {
+        this.page += 1;
+        this.initDta();
+      } else {
+        this.more = true;
+      }
     }
   },
   methods: {
     initDta() {
-      this.show=false;
+      this.show = false;
       let Category = {
         cmd: "selectGoodsByCategory",
         orderType: this.sorts,
@@ -107,12 +109,12 @@ export default {
           if (res.result == 0) {
             this.totalPage = res.totalPage;
             // if (this.page <= res.totalPage) {
-              for (var i = 0; i < res.dataList.length; i++) {
-                res.dataList[i].type = this.direct;
-                this.list.push(res.dataList[i]);
-              }
+            for (var i = 0; i < res.dataList.length; i++) {
+              res.dataList[i].type = this.direct;
+              this.list.push(res.dataList[i]);
+            }
             // } else
-             if (res.dataList.length == 0) {
+            if (res.dataList.length == 0) {
               this.show = true;
             }
           }

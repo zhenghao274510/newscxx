@@ -102,7 +102,7 @@ import QQMapWX from "@/common/jsdk/qqmap-wx-jssdk";
 export default {
   data() {
     return {
-      showNav:false,
+      showNav: false,
       current: "",
       active: 0,
       num: 0,
@@ -145,7 +145,7 @@ export default {
     this.getCurLocation();
     this.qqMapSdk = new QQMapWX({
       key: "JYKBZ-NJNCU-GVDVC-B3RUD-AA5EH-3PFYT"
-    })
+    });
   },
   onShow() {
     if (wx.getStorageSync("leaderInfo")) {
@@ -156,7 +156,7 @@ export default {
     if (wx.getStorageSync("user")) {
       this.cid = JSON.parse(wx.getStorageSync("user")).cid;
       console.log(this.cid);
-      console.log(this.$api)
+      console.log(this.$api);
       this.$api.getnum(this.cid);
     }
   },
@@ -191,7 +191,7 @@ export default {
         if (id == cateTAB[i].id) {
           console.log(cateTAB[i]);
           self.direct = 0;
-          this.showNav=true;
+          this.showNav = true;
           if (cateTAB[i].list) {
             self.datas = cateTAB[i].list.child;
             self.images = cateTAB[i].list.rotationChart;
@@ -229,7 +229,7 @@ export default {
           // }
         } else if (id == cateTAB[i].type) {
           self.direct = id;
-           this.showNav=false;
+          this.showNav = false;
           let parmas = {
             cmd: "pinTuanPage",
             pageNow: self.page,
@@ -296,7 +296,7 @@ export default {
           .then(res => {
             if (res.result == 0) {
               console.log(res);
-                this.cate1 = [
+              this.cate1 = [
                 { type: "100", name: "社区团购" },
                 { id: "", name: "精品推荐" }
               ];
@@ -371,7 +371,7 @@ export default {
       let datas = {};
       // if (self.page < self.totalPage) {
       // self.page += 1;
-      if (this.direct==100) {
+      if (this.direct == 100) {
         console.log("打折加载");
         datas = {
           cmd: "pinTuanPage",
@@ -422,7 +422,7 @@ export default {
     },
     // 选择附近社区
     choseNearBy() {
-      if (this.cid == undefined ||this.cid=="") {
+      if (this.cid == undefined || this.cid == "") {
         this.nouser();
       } else {
         wx.navigateTo({
@@ -431,8 +431,8 @@ export default {
       }
     },
     changeIng(k) {
-        let ind = k.target.index;
-         this.active = ind;
+      let ind = k.target.index;
+      this.active = ind;
       console.log(k);
       this.clear();
       if (this.timer == 1) {
@@ -451,14 +451,12 @@ export default {
       }, 100);
 
       console.log(this.id);
-
-     
     },
     goSearch() {
       this.$router.push("/pages/search/index");
     },
     goMessage() {
-      if (this.cid == undefined ||this.cid=="") {
+      if (this.cid == undefined || this.cid == "") {
         this.nouser();
       } else {
         let parmas = {
@@ -498,21 +496,25 @@ export default {
     //     .catch(res => {});
     // },
     chakan(v) {
-      console.log(v);
-      console.log(this.id);
-      // if (this.id == 100 || this.id == 200) 
-      if (this.id == 100 ){
-        wx.navigateTo({
-          url: "/pages/discount/pintuanList?id=" + this.id
-        });
-      } else if (this.id == "") {
-        wx.navigateTo({
-          url: "/pages/discount/discountList?id=" + this.id
-        });
+      if (this.cid == undefined || this.cid == "") {
+        this.nouser();
       } else {
-        wx.navigateTo({
-          url: "/pages/discount/goodFood?id=" + this.id
-        });
+        console.log(v);
+        console.log(this.id);
+        // if (this.id == 100 || this.id == 200)
+        if (this.id == 100) {
+          wx.navigateTo({
+            url: "/pages/discount/pintuanList?id=" + this.id
+          });
+        } else if (this.id == "") {
+          wx.navigateTo({
+            url: "/pages/discount/discountList?id=" + this.id
+          });
+        } else {
+          wx.navigateTo({
+            url: "/pages/discount/goodFood?id=" + this.id
+          });
+        }
       }
     },
     //
@@ -537,13 +539,12 @@ export default {
       //   wx.navigateTo({
       //     url: "/pages/Good/gooddetials?id=" + JSON.stringify(obj)
       //   });
-      // } 
-     
+      // }
     },
     //购物车图标
     shopcart(v) {
       console.log(1);
-      if (this.cid == undefined || this.cid=="") {
+      if (this.cid == undefined || this.cid == "") {
         this.nouser();
       } else {
         let datas = {

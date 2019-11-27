@@ -346,7 +346,7 @@ export default {
       });
     },
     addCart() {
-      if (this.cid == undefined) {
+      if (this.cid ==undefined ||this.cid=="") {
         this.nouser();
       } else {
         if (this.LeaveEnd == 0) {
@@ -478,7 +478,12 @@ export default {
     },
 
     showSku() {
+        if (this.cid == undefined ||this.cid=="") {
+        // this.$router.push("/login");
+        this.nouser();
+      } else {
       this.showBase = true;
+      }
     },
     //  顶部 购物车图标
     order() {
