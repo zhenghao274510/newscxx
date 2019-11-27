@@ -118,8 +118,8 @@ export default {
     this.billyin = false;
     this.bill = "";
     this.sid = "";
-    // this.amount="";
-    // this.youhuis = false;
+    this.amount="";
+    this.youhuis = false;
     if (wx.getStorageSync("user")) {
       this.cid = JSON.parse(wx.getStorageSync("user")).cid;
       this.openId = JSON.parse(wx.getStorageSync("user")).openId;
