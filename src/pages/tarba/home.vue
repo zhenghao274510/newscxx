@@ -89,6 +89,8 @@
         </van-tab>
       </van-tabs>
     </div>
+
+    <sec-footer :tabarA="a"></sec-footer>
   </div>
 </template>
 
@@ -99,9 +101,11 @@ import Discount from "@/components/discount";
 import Recommendx from "@/components/recommendx";
 import Request from "@/common/js/request";
 import QQMapWX from "@/common/jsdk/qqmap-wx-jssdk";
+import secFooter from "@/components/SecFooter";
 export default {
   data() {
     return {
+      a: 0,
       showNav: false,
       current: "",
       active: 0,
@@ -125,7 +129,7 @@ export default {
       direct: 100,
       leader: {},
       fromid: "",
-      timer: 0
+      isload: 0
     };
   },
   onShareAppMessage() {
@@ -148,6 +152,7 @@ export default {
     });
   },
   onShow() {
+    this.active = 0;
     if (wx.getStorageSync("leaderInfo")) {
       this.leader = JSON.parse(wx.getStorageSync("leaderInfo"));
       console.log(this.leader);
@@ -164,7 +169,8 @@ export default {
     swipe,
     Navs,
     Discount,
-    Recommendx
+    Recommendx,
+    secFooter
   },
   mounted() {},
   //  上拉触底 加载
@@ -184,6 +190,7 @@ export default {
     },
     initLoad(id) {
       //处理初始化页面数据缓存开始
+       this.isload=0;
       let self = this;
       // console.log(id);
       let cateTAB = JSON.parse(wx.getStorageSync("cateTAB"));
@@ -192,13 +199,13 @@ export default {
           console.log(cateTAB[i]);
           self.direct = 0;
           this.showNav = true;
-          if (cateTAB[i].list) {
-            self.datas = cateTAB[i].list.child;
-            self.images = cateTAB[i].list.rotationChart;
-            self.totalPage = cateTAB[i].list.totalPage;
-            self.recommendList = cateTAB[i].list.order;
-            self.dataList = cateTAB[i].list.discount;
-          }
+          // if (cateTAB[i].list) {
+          //   self.datas = cateTAB[i].list.child;
+          //   self.images = cateTAB[i].list.rotationChart;
+          //   self.totalPage = cateTAB[i].list.totalPage;
+          //   self.recommendList = cateTAB[i].list.order;
+          //   self.dataList = cateTAB[i].list.discount;
+          // }
           // else {
           let datas = {
             cmd: "recommendGoods",
@@ -207,6 +214,7 @@ export default {
           };
           Request.noLoading(datas)
             .then(res => {
+             
               console.log(res);
               if (res.result == 0) {
                 cateTAB[i].list = {};
@@ -215,12 +223,12 @@ export default {
                 self.totalPage = res.totalPage;
                 self.dataList = res.discount;
                 self.recommendList = res.order;
-                cateTAB[i].list.child = res.child;
-                cateTAB[i].list.rotationChart = res.rotationChart;
-                cateTAB[i].list.totalPage = res.totalPage;
-                cateTAB[i].list.discount = res.discount;
-                cateTAB[i].list.order = res.order;
-                wx.setStorageSync("cateTAB", JSON.stringify(cateTAB));
+                // cateTAB[i].list.child = res.child;
+                // cateTAB[i].list.rotationChart = res.rotationChart;
+                // cateTAB[i].list.totalPage = res.totalPage;
+                // cateTAB[i].list.discount = res.discount;
+                // cateTAB[i].list.order = res.order;
+                // wx.setStorageSync("cateTAB", JSON.stringify(cateTAB));
               }
             })
             .catch(res => {});
@@ -280,45 +288,37 @@ export default {
       }
     },
     diao() {
-      wx.removeStorageSync("cateTAB");
-      if (wx.getStorageSync("cateTAB")) {
-        this.cate1 = JSON.parse(wx.getStorageSync("cateTAB"));
-        this.active = 0;
-        this.id = this.cate1[0].type;
-        this.initLoad(this.id);
-      } else {
-        let datas = {
-          cmd: "goodsCategoryInit",
-          uid: ""
-        };
-        console.log(datas);
-        Request.noLoading(datas)
-          .then(res => {
-            if (res.result == 0) {
-              console.log(res);
-              this.cate1 = [
-                { type: "100", name: "社区团购" },
-                { id: "", name: "精品推荐" }
-              ];
-              // this.cate1 = [
-              //   { type: "100", name: "拼团" },
-              //   { type: "200", name: "拿货团" },
-              //   { id: "", name: "精品推荐" }
-              // ];
-              // let self=this;
-              for (let i in res.dataList) {
-                this.cate1.push(res.dataList[i]);
-              }
-              setTimeout(() => {
-                this.id = this.cate1[0].type;
-                this.initLoad(this.id);
-              }, 30);
-
-              wx.setStorageSync("cateTAB", JSON.stringify(this.cate1));
+      let datas = {
+        cmd: "goodsCategoryInit",
+        uid: ""
+      };
+      console.log(datas);
+      Request.noLoading(datas)
+        .then(res => {
+          if (res.result == 0) {
+            console.log(res);
+            this.cate1 = [
+              { type: "100", name: "社区团购" },
+              { id: "", name: "精品推荐" }
+            ];
+            // this.cate1 = [
+            //   { type: "100", name: "拼团" },
+            //   { type: "200", name: "拿货团" },
+            //   { id: "", name: "精品推荐" }
+            // ];
+            // let self=this;
+            for (let i in res.dataList) {
+              this.cate1.push(res.dataList[i]);
             }
-          })
-          .catch(res => {});
-      }
+            setTimeout(() => {
+              this.id = this.cate1[0].type;
+              this.initLoad(this.id);
+            }, 30);
+            wx.setStorageSync("cateTAB", JSON.stringify(this.cate1));
+          }
+        })
+        .catch(res => {});
+      // }
     },
 
     getCurLocation() {
@@ -405,6 +405,11 @@ export default {
       this.page = 1;
       this.more = false;
       this.totalPage = 1;
+      this.list = [];
+      this.datas = [];
+      this.images = [];
+      this.dataList = [];
+      this.recommendList = [];
     },
     nouser() {
       wx.showModal({
@@ -431,26 +436,32 @@ export default {
       }
     },
     changeIng(k) {
+      console.log(k)
       let ind = k.target.index;
-      this.active = ind;
-      console.log(k);
-      this.clear();
-      if (this.timer == 1) {
-        return;
-      } else {
-        this.timer = 1;
+       this.active = ind;
+      console.log(this.active);
+      if (this.isload == 0) {
+        this.isload=1;
+           this.clear();
         if (this.cate1[ind].id != undefined) {
           this.id = this.cate1[ind].id;
+          this.initLoad(this.id);
         } else {
           this.id = this.cate1[ind].type;
+          this.initLoad(this.cate1[ind].type);
         }
-        this.initLoad(this.id);
+      } else {
+        return;
       }
-      setTimeout(() => {
-        this.timer = 0;
-      }, 100);
-
-      console.log(this.id);
+      // if (this.cate1[ind].id != undefined) {
+      //   this.id = this.cate1[ind].id;
+      //   // this.initLoad(this.id);
+      // } else {
+      //   // this.id = this.cate1[ind].type;
+      //   this.initLoad(this.cate1[ind].type);
+      // }
+      // this.initLoad(this.id);
+      // console.log(this.id);
     },
     goSearch() {
       this.$router.push("/pages/search/index");

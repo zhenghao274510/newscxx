@@ -69,14 +69,17 @@
       <div class="count" @click.stop="goCenter" v-if="shan==false">结算</div>
       <div class="count counts" @click.stop="del" v-else>删除</div>
     </div>
+    <sec-footer :tabarA="a"></sec-footer>
   </div>
 </template>
 
 <script>
 import Request from "@/common/js/request";
+import secFooter from "@/components/SecFooter"
 export default {
   data() {
     return {
+      a:3,
       activeT: 0,
       // title: [
       //   { name: "精品购物车", count: "" },
@@ -100,6 +103,9 @@ export default {
       cid: ""
     };
   },
+  components:{
+    secFooter
+  },
   onShareAppMessage() {
     return {
       title: "山城乡鲜",
@@ -113,7 +119,9 @@ export default {
       title: "购物车"
     });
   },
-  components: {},
+  components: {
+    secFooter
+  },
   computed: {
     total() {
       let count = 0;
@@ -487,7 +495,7 @@ page {
 
 .contain {
   width: 100%;
-  // height: 100%;
+  height: 100%;
   padding-bottom: 60px;
   box-sizing: border-box;
 
@@ -697,7 +705,7 @@ page {
   .finish {
     position: fixed;
     left: 0;
-    bottom: 0;
+    bottom:50px;
     width: 100%;
     height: 50px;
     display: flex;

@@ -8,17 +8,20 @@
         <span>没有更多了</span>
       </div>
     </div>
+    <sec-footer :tabarA="a"></sec-footer>
   </div>
 </template>
 
 <script>
 import shop from "@/components/shop";
 import Request from "@/common/js/request";
+import secFooter from "@/components/SecFooter"
 // import QQMapWX from "@/common/jsdk/qqmap-wx-jssdk";
 // import getCity from "@/common/js/location";
 export default {
   data() {
     return {
+      a:2,
       cid: "",
       num: 2,
       active: 2,
@@ -31,7 +34,8 @@ export default {
     };
   },
   components: {
-    shop
+    shop,
+    secFooter
   },
    onShareAppMessage() {
      return this.$share.share()

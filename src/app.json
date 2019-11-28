@@ -145,42 +145,6 @@
     "request": 10000,
     "downloadFile": 10000
   },
-  "tabBar": {
-    "color": "#999",
-    "backgroundColor": "#ffffff",
-    "selectedColor": "#72D241",
-    "borderStyle": "black",
-    "list": [{
-        "text": "首页",
-        "pagePath": "pages/tarba/home",
-        "iconPath": "static/tabs/shouye1.png",
-        "selectedIconPath": "static/tabs/shouye2.png"
-      }, {
-        "text": "分类",
-        "pagePath": "pages/tarba/class",
-        "iconPath": "static/tabs/fenlei.png",
-        "selectedIconPath": "static/tabs/fenlei2.png"
-      },
-      {
-        "text": "附近商家",
-        "pagePath": "pages/tarba/nearyShop",
-        "iconPath": "static/tabs/fujinshangjia.png",
-        "selectedIconPath": "static/tabs/fujinshangjia2.png"
-      }, {
-        "text": "购物车",
-        "pagePath": "pages/tarba/cart",
-        "iconPath": "static/tabs/gouwuche.png",
-        "selectedIconPath": "static/tabs/gouwuche2.png"
-      },
-      {
-        "text": "我的",
-        "pagePath": "pages/tarba/person",
-        "iconPath": "static/tabs/wode.png",
-        "selectedIconPath": "static/tabs/wode2.png"
-      }
-    ],
-    "position": "bottom"
-  },
   "usingComponents": {
     "van-icon": "/static/vant/icon/index",
     "van-search": "/static/vant/search/index",

@@ -45,14 +45,17 @@
         </div>
       </scroll-view>
     </div>
+    <sec-footer :tabarA="a"></sec-footer>
   </div>
 </template>
 
 <script>
 import Request from "@/common/js/request";
+import secFooter from "@/components/SecFooter"
 export default {
   data() {
     return {
+      a:1,
       // title: ["精品", "拼团", "拿货团"],
       title: ["精品", "拼团"],
       activeT: 0,
@@ -67,7 +70,9 @@ export default {
       contentHeight: [] // 内容区域scroll-view高度
     };
   },
-  components: {},
+  components: {
+    secFooter
+  },
   onLoad(options) {
     wx.setNavigationBarTitle({
       title: "分类"
