@@ -467,9 +467,7 @@ export default {
     },
     //  顶部 购物车图标
     order() {
-      wx.switchTab({
-        url: "/pages/tarba/cart"
-      });
+      this.$router.replace({url:'/pages/tarba/cart'})
     },
     onAdd() {
       if (this.currentSkuList.stock <= 0) {

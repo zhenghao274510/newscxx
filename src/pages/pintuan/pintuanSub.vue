@@ -244,7 +244,7 @@ export default {
   methods: {
     chosetuan() {
       wx.navigateTo({
-        url: "/pages/pintuan/nearbytuan"
+        url:"/pages/my/tuanzhangcenter/choseLeader"
       });
     },
     onChange(e) {
@@ -466,7 +466,8 @@ export default {
           orders: shopall,
           leaderid: this.leaderid,
           quhuoname: this.addcity.receiverName,
-          quhuophone: this.addcity.mobile
+          quhuophone: this.addcity.mobile,
+          leaderid:this.leaderid
         };
         console.log(objsh);
         Request.postRequest(objsh)

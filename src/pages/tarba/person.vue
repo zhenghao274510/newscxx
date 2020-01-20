@@ -185,7 +185,7 @@
         </div>
       </div>
     </div>
-    <sec-footer :tabarA="a"></sec-footer>
+    <sec-footer :tabarA="a" :cartnum="cartnum"></sec-footer>
   </div>
 </template>
 
@@ -213,7 +213,8 @@ export default {
       formid: "",
       first: true,
       // text: "团长入驻",
-      state: 0
+      state: 0,
+      cartnum:0
     };
   },
   components: {
@@ -236,6 +237,7 @@ export default {
       this.cid = JSON.parse(wx.getStorageSync("user")).cid;
       this.gouserInfo();
       this.infoList();
+      this.getnum(this.cid);
     }
   },
   mounted() {},
@@ -386,40 +388,17 @@ export default {
         }
       }
     },
-    // learCenter() {
-    //   let num = Number(this.state);
-    //   switch (num) {
-    //     case 0:
-    //       wx.showToast({
-    //         title: "正在审核中!请稍等...",
-    //         icon: "none"
-    //       });
-    //       break;
-    //     case 1:
-    //       setTimeout(() => {
-    //         wx.navigateTo({
-    //           url: "/pages/my/tuanzhangcenter/tuanzhangcenter"
-    //         });
-    //       }, 30);
-
-    //       break;
-    //     case 2:
-    //       wx.showToast({
-    //         title: "你的审核没有通过，请重新填写个人信息",
-    //         icon: "none"
-    //       });
-    //       setTimeout(() => {
-    //         wx.navigateTo({
-    //           url: "/pages/my/tuanzhangcenter/restuanzhang"
-    //         });
-    //       }, 500);
-    //       break;
-    //     case 3:
-    //       wx.navigateTo({
-    //         url: "/pages/my/tuanzhangcenter/restuanzhang"
-    //       });
-    //   }
-    // },
+      getnum(cid) {
+      let parmas = {
+        cmd: "cartCount",
+        cid: cid,
+        flag: "1"
+      };
+      Request.noLoading(parmas).then(res => {
+        console.log(res);
+        this.cartnum = res.totalCount;
+      });
+    },
     goMsg() {
       if (this.cid == undefined || this.cid == "") {
         this.nouser();
@@ -477,7 +456,7 @@ export default {
             wx.navigateTo({ url: "/pages/my/mypingjia" });
             break;
           case 2:
-            wx.navigateTo({ url: "/pages/address/myadd" + "2" });
+            wx.navigateTo({ url: "/pages/address/myadd"});
             break;
         }
       }

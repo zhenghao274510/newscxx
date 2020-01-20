@@ -53,7 +53,7 @@ export default {
     },
     goDetail(item) {
       let obj = { type: item.type, id: item.id };
-      if (item.type == 1) {
+      if (item.type == 1||item.type==100) {
         wx.navigateTo({
           url: "/pages/pintuan/gooddetailspin?id=" + JSON.stringify(obj)
         });
@@ -68,6 +68,7 @@ export default {
       }
     },
     shopcart(v) {
+      console.log("recommendfen")
       if (this.cid == undefined||this.cid=="") {
         console.log(21);
         wx.showModal({

@@ -1,13 +1,9 @@
 <template>
   <div class="all">
     <div class="contains">
-      <div class="nav-item" v-for="(item,index) in datas" :key="index" v-if="index<9">
+      <div class="nav-item" v-for="(item,index) in datas" :key="index">
         <img :src="item.icon" alt @click.stop="classify(item)" lazy-load />
         <span>{{item.name}}</span>
-      </div>
-      <div class="nav-item xia" @click.stop="fenlei" v-if="datas.length>0">
-        <img src="/static/img/tilogo.png" alt lazy-load />
-        <span>更多</span>
       </div>
     </div>
   </div>
@@ -33,37 +29,20 @@ export default {
     classify(e) {
       e.direct=this.direct;
       // if (this.direct == 100) {
-      //   wx.navigateTo({
-      //     url: "/pages/class/onepinclass?id=" + JSON.stringify(e)
-      //   });
-      // } else {
         wx.navigateTo({
-          url: "/pages/class/oneclass?id=" + JSON.stringify(e)
+          url: "/pages/class/onepinclass?id=" + JSON.stringify(e)
         });
+      // } else {
+      //   wx.navigateTo({
+      //     url: "/pages/class/oneclass?id=" + JSON.stringify(e)
+      //   });
       // }
       console.log(e);
     },
-    fenlei() {
-      let url = "";
-      // console.log(this.direct);
-      // if (this.direct == 100) {
-      //   url = "/pages/tarba/class?id=" + 1;
-      //   // this.$router.replace({path:'/pages/tarba/class',query:{id:1}})
-      // } else if (this.direct == 200) {
-      //   url = "/pages/tarba/class?id=" + 2;
-      //   // this.$router.replace({path:'/pages/tarba/class',query:{id:2}})
-      // } else {
-        url = "/pages/tarba/class?id=" + 0;
-        // this.$router.replace({path:'/pages/tarba/class',query:{id:0}})
-      // }
-      console.log(111);
-      wx.reLaunch({
-        url: url
-      });
-      // this.$router.replace({ url
-      // });
-    }
+   
   }
+    
+  
 };
 </script>
 

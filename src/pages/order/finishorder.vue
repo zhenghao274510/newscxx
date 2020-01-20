@@ -1,20 +1,30 @@
 <template>
   <div class="contain">
     <div class="box">
-      <h3>收货人信息</h3>
-      <div class="user_box" @click="shouhuo" v-if="addchu==false">
-        <div class="user_left">
-          <p>{{addcity.addr}}</p>
-          <div class="user_name">
-            <span>{{addcity.receiverName}}</span>
-            <span style="margin-left: 0.4rem;">{{addcity.mobile}}</span>
+      <div class="box-left">
+        <h3>收货人信息</h3>
+        <div class="user_box" @click="shouhuo" v-if="addchu==false">
+          <div class="user_left">
+            <p>{{addcity.addr}}</p>
+            <div class="user_name">
+              <span>{{addcity.receiverName}}</span>
+              <span style="margin-left: 0.4rem;">{{addcity.mobile}}</span>
+            </div>
           </div>
+          <img src="/static/img/gengduo3.png" alt />
         </div>
-        <img src="/static/img/gengduo3.png" alt />
+        <div v-else class="user_box nouser" @click="shouhuo" style="line-height:70px">
+          <div class="user_left">去选择收货地址</div>
+          <img src="/static/img/gengduo3.png" alt />
+        </div>
       </div>
-      <div v-else class="user_box nouser" @click="shouhuo" style="line-height:70px">
-        <div class="user_left">去选择收货地址</div>
-        <img src="/static/img/gengduo3.png" alt />
+      <!-- 新增 -->
+      <div class="box-right" @click.stop="chosetuan">
+        <div style="padding-left:10px;">
+          <span>团长</span>
+          <p v-if="leaderid!=''">{{leader.name}}</p>
+          <p v-else>团长名称</p>
+        </div>
       </div>
     </div>
     <div
@@ -107,7 +117,9 @@ export default {
       Invoice: "",
       openId: "",
       orderid: "",
-      direct: 0
+      direct: 0,
+      leaderid: "",
+      leader:{}
     };
   },
   components: {},
@@ -118,7 +130,7 @@ export default {
     this.billyin = false;
     this.bill = "";
     this.sid = "";
-    this.amount="";
+    this.amount = "";
     this.youhuis = false;
     if (wx.getStorageSync("user")) {
       this.cid = JSON.parse(wx.getStorageSync("user")).cid;
@@ -159,6 +171,13 @@ export default {
       wx.removeStorageSync("newaddress");
     } else {
       this.defaultAddress(this.cid);
+    }
+
+    //   团长
+    if (wx.getStorageSync("leaderInfo")) {
+      this.leader = JSON.parse(wx.getStorageSync("leaderInfo"));
+      this.leaderid = this.leader.leaderid;
+      console.log(this.leader);
     }
     //   获取发票
     if (wx.getStorageSync("Invoice")) {
@@ -222,6 +241,11 @@ export default {
     }
   },
   methods: {
+    chosetuan() {
+      wx.navigateTo({
+        url: "/pages/my/tuanzhangcenter/choseLeader"
+      });
+    },
     onChange(e) {
       let k = e.target.id;
       this.texts[k] = e.target.text;
@@ -427,6 +451,7 @@ export default {
           aid: this.addcity.id,
           totalFee: this.endPrice,
           // totalFee: "0.01",
+          leaderid:this.leaderid,
           orders: shopall
         };
         console.log(objsh);
@@ -441,7 +466,7 @@ export default {
                 orderid: this.orderid,
                 openid: this.openId,
                 //   总价
-                 money: this.endPrice
+                money: this.endPrice
                 // money: "0.01"
               };
               console.log(parmas);
@@ -519,68 +544,99 @@ export default {
 .box {
   width: 100%;
   display: flex;
-  flex-direction: column;
-  padding: 0 12px;
+  justify-content: space-between;
+  padding: 0 0.2rem 0;
   box-sizing: border-box;
   border-top: 1px solid #eee;
 
-  h3 {
-    width: 100%;
-    height: 35px;
-    line-height: 35px;
-    font-size: 14px;
-    color: #333;
-    border-bottom: 1px solid #eee;
-  }
+  .box-left {
+    width: 75%;
 
-  .nouser {
-    height: 70px;
-    box-sizing: border-box;
-  }
-
-  .user_box {
-    width: 100%;
-    // height:70px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-
-    .user_left {
-      width: 80%;
-      display: flex;
-      flex-direction: column;
+    h3 {
+      width: 100%;
+      height: 35px;
+      line-height: 35px;
       font-size: 14px;
       color: #333;
-
-      p {
-        width: 100%;
-        text-overflow: -o-ellipsis-lastline;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        font-weight: 700;
-        font-size: 16px;
-        -webkit-box-orient: vertical;
-        line-height: 30px;
-        padding-top: 0.3rem;
-      }
-
-      .user_name {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        padding: 0.1rem 0;
-        color: #333;
-        color: #333;
-        box-sizing: border-box;
-      }
+      border-bottom: 1px solid #eee;
     }
 
-    img {
-      width: 11px;
-      height: 11px;
+    .nouser {
+      height: 70px;
+      box-sizing: border-box;
+    }
+
+    .user_box {
+      width: 100%;
+      // height:70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+
+      .user_left {
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        font-size: 14px;
+        color: #333;
+
+        p {
+          width: 100%;
+          text-overflow: -o-ellipsis-lastline;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          font-weight: 500;
+          font-size: 13px;
+          -webkit-box-orient: vertical;
+          line-height: 20px;
+          // padding-top: 0.3rem;
+        }
+
+        .user_name {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          padding: 0.1rem 0;
+          font-size: 14px;
+          color: #333;
+          box-sizing: border-box;
+        }
+      }
+
+      img {
+        width: 11px;
+        height: 11px;
+      }
+    }
+  }
+
+  .box-right {
+    width: 25%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 15px;
+
+    div {
+      border-left: 1px solid #eee;
+
+      span {
+        display: block;
+        padding: 3px 7px;
+        font-size: 12px;
+        background: rgb(114, 209, 65);
+        color: #fff;
+        text-align: center;
+      }
+
+      p {
+        font-size: 13px;
+        text-align: center;
+        margin-top: 10px;
+      }
     }
   }
 }

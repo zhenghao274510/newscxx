@@ -14,7 +14,7 @@
               <span>￥{{v.price}}</span>
               <s>￥{{v.originalPrice}}</s>
             </div>
-            <img src="/static/img/gouwuche2.png" alt @click.stop="shopcart(v)" />
+            <img src="/static/img/gouwuche2.png" alt @click.stop="shopcart(v)" v-if="direct!=100" />
           </div>
         </div>
       </li>
@@ -45,9 +45,10 @@ export default {
       cid: ""
     };
   },
-  created() {},
-  onShow() {
-    this.cid = JSON.parse(wx.getStorageSync("user")).cid;
+ onShow() {
+    if (wx.getStorageSync("user")) {
+      this.cid = JSON.parse(wx.getStorageSync("user")).cid;
+    }
   },
   methods: {
     detail(id) {
@@ -73,42 +74,7 @@ export default {
     },
     //购物车图标
     shopcart(v) {
-      if (this.cid ==undefined ||this.cid=="") {
-        wx.showModal({
-          title: "温馨提醒！",
-          content: "你还没有登录，请先登录",
-          showCancel: false,
-          success: function(res) {
-            if (res.confirm) {
-              wx.navigateTo({
-                url: "/pages/author/index"
-              });
-            }
-          }
-        });
-      } else {
-        let datas = {
-          cmd: "addToCar",
-          gid: v.id,
-          cid: this.cid,
-          specifications: v.skuId,
-          number: 1
-        };
-        Request.postRequest(datas)
-          .then(res => {
-            console.log(res);
-            if (res.result == 0) {
-              wx.showToast({
-                title: "添加购物车成功",
-                icon:'none'
-              });
-              this.$api.getnum(this.cid)
-              // this.gounum();
-              // this.donghua = false;
-            }
-          })
-          .catch(res => {});
-      }
+      this.$emit('click',v)
     }
   }
 };

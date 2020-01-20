@@ -4,6 +4,7 @@
 			<image :src="tabarA==index?item.imgh:item.img"></image>
 			<text  class="choose" v-if="tabarA==index">{{item.txt}}</text>
 			<text class="dc" v-else>{{item.txt}}</text>
+		  <text class="pos" v-if="index==3">{{cartnum}}</text>
 			
 		</view>
 	</view>
@@ -16,9 +17,14 @@
 				type: Number,
 				default: 0
 			},
+			cartnum:{
+				type:Number,
+				default:0
+			}
 		},
 		data() {
 			return {
+				num:0,
 				nav: [{
 						txt: '首页',
 						img: "/static/tabs/shouye1.png",
@@ -51,7 +57,6 @@
 		onLoad() {
 		},
 		onShow() {
-			
 		},
 		onHide() {},
 		methods: {
@@ -110,6 +115,19 @@
 		border-top: 1px solid #f2f3f4;
 		box-sizing: border-box;
 	}
+	.pos{
+		width: 15px;
+		height: 15px;
+		line-height:15px;
+		text-align: center;
+		position: absolute;
+		top: -5px;
+		right: 15px;
+		background: red;
+		color: #fff;
+		border-radius: 50%;
+		font-size: 10px;
+	}
 
 	.item {
 		flex: 1;
@@ -119,6 +137,7 @@
 		justify-content: center;
 		font-size: 14px;
 		color: #999;
+		position: relative;
 	}
 
 	.item image {

@@ -72,7 +72,7 @@ export default {
         cmd: "toDayEffectiveOrder",
         pageNow: this.page,
         leaderid: this.leaderid,
-        type:'0'
+        type:'1'
       };
       console.log(parmas);
       Request.postRequest(parmas)
@@ -95,7 +95,7 @@ export default {
       console.log(id);
       let obj = { direct: 1, id: id };
       wx.navigateTo({
-        url: "/pages/order/shequorderdetial?id=" + JSON.stringify(obj)
+        url: "/pages/order/tuanzhangorder?id=" + JSON.stringify(obj)
       });
     }
   },

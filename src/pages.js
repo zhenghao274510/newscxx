@@ -246,6 +246,12 @@ module.exports = [{
     }
   },
   {
+    path: 'pages/order/tuanzhangorder',
+    config: {
+      navigationBarTitleText: '订单详情',
+    }
+  },
+  {
     path: 'pages/order/shequorder',
     config: {
       navigationBarTitleText: '社区订单',
@@ -269,6 +275,26 @@ module.exports = [{
       navigationBarTitleText: '搜索',
     }
   },
+
+  {
+    path: 'pages/my/tuanzhangcenter/serverLinged',
+    config: {
+      navigationBarTitleText: '服务经理',
+    }
+  },
+  {
+    path: 'pages/my/tuanzhangcenter/choseLeader',
+    config: {
+      navigationBarTitleText: '选择团长',
+    }
+  },
+  {
+    path: 'pages/my/tuanzhangcenter/todayOrderDetails',
+    config: {
+      navigationBarTitleText: '今日收益',
+    }
+  },
+  // tuanzhangorder
   {
     path: 'pages/search/search_product',
     config: {

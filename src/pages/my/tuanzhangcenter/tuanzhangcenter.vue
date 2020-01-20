@@ -147,9 +147,9 @@
         </div>
 
         <div class="usemoneydetials">
-          <p class="title">数据看板</p>
+          <p class="title">拼团订单数据看板</p>
           <ul class="active_order">
-            <li @click="goto">
+            <li @click="goto(0)">
               <p class="money">{{useObj.todayOrder}}</p>
               <p class="newday">今日</p>
               <p>有效订单(单)</p>
@@ -169,6 +169,39 @@
             <p>本月总收益:{{useObj.monthProfit}}</p>
             <p>历史总收益:{{useObj.historyProfit}}</p>
           </div>
+        </div>
+
+        <div class="usemoneydetials">
+          <p class="title">精选/拿货团数据看板</p>
+          <ul class="active_order">
+            <li @click="goto(1)">
+              <p class="money">{{useObj.todayOrder2}}</p>
+              <p class="newday">今日</p>
+              <p>有效订单(单)</p>
+            </li>
+            <li>
+              <p class="money">{{useObj.todayDealMoney2}}</p>
+              <p class="newday">今日</p>
+              <p>有效成交额(元)</p>
+            </li>
+            <li @click="detials(1)">
+              <p class="money">{{useObj.todayPendSettle2}}</p>
+              <p class="newday">今日</p>
+              <p>待结算佣金(元)</p>
+            </li>
+          </ul>
+          <div class="history">
+            <p>本月总收益:{{useObj.monthProfit2}}</p>
+            <p>历史总收益:{{useObj.historyProfit2}}</p>
+          </div>
+        </div>
+
+        <div class="tuanzhangEnd">
+          <!-- <img src='/static/img/touxiang.png' alt /> -->
+          <img :src="useObj.agentIcon" alt />
+
+          <p class="one">我的服务经理:{{useObj.agentName}}</p>
+          <p @click="tellTo(useObj.agentPhone)">服务经理电话:{{useObj.agentPhone}}</p>
         </div>
       </div>
     </div>
@@ -218,13 +251,18 @@ export default {
       this.info();
     }
   },
-   onShareAppMessage() {
-     return this.$share.share()
-   },
+  onShareAppMessage() {
+    return this.$share.share();
+  },
   //方法集合
   methods: {
+    tellTo(tel) {
+      wx.makePhoneCall({
+        phoneNumber: tel
+      });
+    },
     enter() {
-      console.log(111)
+      console.log(111);
       wx.setStorageSync("leaderInfo", JSON.stringify(this.useObj));
       setTimeout(() => {
         wx.navigateTo({
@@ -232,10 +270,18 @@ export default {
         });
       }, 100);
     },
-    goto() {
-      wx.navigateTo({
-        url: "/pages/my/tuanzhangcenter/todayDetails?id="+this.useObj.leaderid
-      });
+    goto(n) {
+      n == 0
+        ? wx.navigateTo({
+            url:
+              "/pages/my/tuanzhangcenter/todayDetails?id=" +
+              this.useObj.leaderid
+          })
+        : wx.navigateTo({
+            url:
+              "/pages/my/tuanzhangcenter/todayOrderDetails?id=" +
+              this.useObj.leaderid
+          });
     },
     info() {
       let parmas = {
@@ -279,7 +325,9 @@ export default {
           wx.navigateTo({ url: "/pages/order/shequorder?id=" + 3 });
           break;
         case 4:
-          wx.navigateTo({ url: "/pages/order/shequTui?leaderid="+this.useObj.leaderid });
+          wx.navigateTo({
+            url: "/pages/order/shequTui?leaderid=" + this.useObj.leaderid
+          });
           break;
       }
     },
@@ -316,6 +364,31 @@ page {
 <style scoped lang="stylus">
 .top-bar {
   padding: 15px 0;
+}
+
+.tuanzhangEnd {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 30px;
+  margin-top: 30px;
+
+  img {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+  }
+
+  p {
+    color: #1A1A1A;
+    font-size: 13px;
+    text-align: center;
+  }
+
+  .one {
+    margin: 10px 0;
+  }
 }
 
 .topinfo {
@@ -420,7 +493,7 @@ page {
     }
 
     ul {
-      padding: 20px 0;
+      padding: 10px 0;
       display: flex;
       justify-content: space-between;
       align-items: center;

@@ -1,6 +1,6 @@
 <template>
   <div class="contain" ref="list">
-    <div class="top">
+    <!-- <div class="top">
       <ul class="head">
         <li
           v-for="(item,index) in title "
@@ -12,7 +12,7 @@
           <span v-if="item.count!=0">{{item.count}}</span>
         </li>
       </ul>
-    </div>
+    </div> -->
 
     <div class="bianji">
       <div @click.stop="goEditor(shan)" v-if="dataList.length!=0">{{bianji}}</div>
@@ -69,7 +69,7 @@
       <div class="count" @click.stop="goCenter" v-if="shan==false">结算</div>
       <div class="count counts" @click.stop="del" v-else>删除</div>
     </div>
-    <sec-footer :tabarA="a"></sec-footer>
+    <sec-footer :tabarA="a" :cartnum="cartnum"></sec-footer>
   </div>
 </template>
 
@@ -80,6 +80,7 @@ export default {
   data() {
     return {
       a:3,
+      cartnum:0,
       activeT: 0,
       // title: [
       //   { name: "精品购物车", count: "" },
@@ -87,8 +88,7 @@ export default {
       //   { name: "拿货团购物车", count: "" }
       // ],
       title: [
-        { name: "精品购物车", count: "" },
-        { name: "拼团购物车", count: "" }
+        { name: "精品购物车", count: "" }
       ],
       num: 3,
       active: 2,
@@ -162,7 +162,7 @@ export default {
         this.checked = false;
         this.yin = false;
         this.gounum();
-        // this.gocarlist(this.cid);
+        this.gocarlist(this.cid);
       }
    
   },
@@ -209,9 +209,8 @@ export default {
     },
     //去首页
     gotoHome() {
-      wx.switchTab({
-        url: "/pages/tarba/home"
-      });
+      console.log(1)
+      this.$router.replace({path:'/pages/tarba/home'})
     },
     gocarlist() {
       let golist = {
@@ -272,6 +271,7 @@ export default {
       Request.noLoading(datas)
         .then(res => {
           console.log(res);
+          this.cartnum=res.totalCount;
           if (res.result == 0) {
             this.title[0].count = res.jingpin;
             this.title[1].count = res.pint;
@@ -509,18 +509,19 @@ page {
     background: #fff;
 
     .head {
-      width: 54%;
+      width: 100px;
       margin: 20px auto;
       // width:100%;
       // padding: 20px 50px 0 50px;
-      border: 1px solid #ccc;
+      // border: 1px solid #ccc;
       border-radius: 20px;
       box-sizing: border-box;
       height: 33px;
       box-sizing: border-box;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      // justify-content: space-between;
+      justify-content: centr;
 
       li {
         padding: 0 15px;
@@ -571,7 +572,7 @@ page {
     margin: 0 auto;
     font-size: 15px;
     text-align: right;
-    margin-top: 70px;
+    margin-top: 10px;
     overflow: hidden;
 
     div {

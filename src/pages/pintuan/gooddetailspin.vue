@@ -80,7 +80,7 @@
         </div>
 
         <div class="addbtn">
-          <span class="first" @click.stop="addCart">加入购物车</span>
+          <span class="first" @click.stop></span>
           <span class="two" @click.stop="addCart">立即下单</span>
         </div>
       </van-goods-action>
@@ -120,8 +120,8 @@
           </div>
 
           <div class="addbtn">
-            <span class="first" @click.stop="onAdd">加入购物车</span>
-            <span class="two" @click.stop="addBuy">立即下单</span>
+            <!-- <span class="first" @click.stop="onAdd">加入购物车</span> -->
+            <span class="spantwo" @click.stop="addBuy">立即下单</span>
           </div>
         </div>
       </div>
@@ -346,7 +346,7 @@ export default {
       });
     },
     addCart() {
-      if (this.cid ==undefined ||this.cid=="") {
+      if (this.cid == undefined || this.cid == "") {
         this.nouser();
       } else {
         if (this.LeaveEnd == 0) {
@@ -367,7 +367,7 @@ export default {
     },
     init() {
       this.detailList = [];
-      this.list=[];
+      this.list = [];
       let datas = {
         cmd: "goodsDetail",
         id: this.id,
@@ -478,18 +478,16 @@ export default {
     },
 
     showSku() {
-        if (this.cid == undefined ||this.cid=="") {
+      if (this.cid == undefined || this.cid == "") {
         // this.$router.push("/login");
         this.nouser();
       } else {
-      this.showBase = true;
+        this.showBase = true;
       }
     },
     //  顶部 购物车图标
     order() {
-      wx.switchTab({
-        url: "/pages/tarba/cart"
-      });
+      this.$router.replace({ url: "/pages/tarba/cart" });
     },
     onAdd() {
       if (this.currentSkuList.stock <= 0) {
@@ -1085,7 +1083,8 @@ page {
   .first {
     width: 50%;
     height: 50px;
-    background: #FB9C1C;
+    background:#ffffff;
+    // background: #FB9C1C;
     color: #fff;
     text-align: center;
     line-height: 50px;
@@ -1093,6 +1092,15 @@ page {
 
   .two {
     width: 50%;
+    height: 50px;
+    background: #72D241;
+    color: #fff;
+    text-align: center;
+    line-height: 50px;
+  }
+
+  .spantwo {
+    width: 100%;
     height: 50px;
     background: #72D241;
     color: #fff;

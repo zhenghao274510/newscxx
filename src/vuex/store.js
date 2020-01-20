@@ -14,8 +14,8 @@ export default new Vuex.Store({
         increment: (state,val) => {
           state.ordertarba= val
         },    
-        decrement: (state) => {
-          state.count -= 1
+        decrement: (state,val) => {
+          state.count = val
         }
       }     
     })

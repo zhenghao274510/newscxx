@@ -13,10 +13,10 @@
       :markers="markers"
     ></map>
     <ul class="searchList">
-      <li v-for="(item,index) in searchList" :key="index">
+      <li v-for="(item,index) in searchList" :key="index" @click="setAddress(item)">
         <!--根据需求渲染相应数据-->
         <!--渲染地址title-->
-        <div @click="setAddress(item)">
+        <div>
           <p style="text-align:left;font-size:14px;">{{item.title}}</p>
           <p style="font-size:12px;color:#666;text-align:left;margin-top:5px;">{{item.address}}</p>
         </div>
@@ -39,8 +39,8 @@ export default {
       keywords: "",
       searchList: [],
       LoadList: [],
-      adduser:{},
-      current:0
+      adduser: {},
+      current: 0
     };
   },
   //监听属性 类似于data概念
@@ -130,17 +130,24 @@ export default {
       this.searchList = [];
       this.markers = [];
     },
-    setAddress(item){
-      console.log(item)
-      this.adduser.province=item.ad_info.province;
-      this.adduser.city=item.ad_info.city;
-      this.adduser.town=item.ad_info.district;
-      this.adduser.addr=item.address;
-      this.adduser.add=item.title;
-      this.adduser.lat=item.location.lat;
-      this.adduser.lng=item.location.lng;
+    setAddress(item) {
+      console.log(item);
+      if (item.ad_info != undefined) {
+        this.adduser.province = item.ad_info.province;
+        this.adduser.city = item.ad_info.city;
+        this.adduser.town = item.ad_info.district;
+      } else {
+        this.adduser.province = item.province;
+        this.adduser.city = item.city;
+        this.adduser.town = item.district;
+      }
 
-      wx.setStorageSync('adduser',JSON.stringify(this.adduser));
+      this.adduser.addr = item.address;
+      this.adduser.add = item.title;
+      this.adduser.lat = item.location.lat;
+      this.adduser.lng = item.location.lng;
+
+      wx.setStorageSync("adduser", JSON.stringify(this.adduser));
       this.$router.go(-1);
     }
   },
@@ -192,13 +199,13 @@ page {
   position: relative;
   border-bottom: 1px solid #ccc;
 }
-.searchList li div p{
+.searchList li div p {
   width: 300px;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow:ellipsis;
+  text-overflow: ellipsis;
 }
-.search{
+.search {
   width: 70%;
   height: 30px;
   margin: 10px auto;
@@ -206,15 +213,15 @@ page {
   justify-content: space-between;
   align-items: center;
 }
-.search input{
+.search input {
   flex: 1;
   /* border:1px solid #ccc; */
   height: 30px;
   padding-left: 10px;
   font-size: 13px;
-  background:#eee;
+  background: #eee;
 }
-.search span{
+.search span {
   font-size: 13px;
   height: 30px;
   display: block;

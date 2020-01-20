@@ -26,7 +26,10 @@
         "shoucang",
         "person_msg",
         "changeMoblie",
-        "message_detail"
+        "message_detail",
+        "tuanzhangcenter/serverLinged",
+        "tuanzhangcenter/choseLeader",
+        "tuanzhangcenter/todayOrderDetails"
       ]
     },
     {
@@ -45,7 +48,8 @@
         "pinorderdetials",
         "shenqingtui",
         "shequorderdetial",
-        "shequTui"
+        "shequTui",
+        "tuanzhangorder"
       ]
     },
     {

@@ -2,7 +2,7 @@
   <div class="contain" ref="list">
     <!-- <div class="head">分类</div> -->
 
-    <div class="top">
+    <!-- <div class="top">
       <ul class="head">
         <li
           v-for="(item,index) in title "
@@ -11,7 +11,7 @@
           @click="changactive(index)"
         >{{item}}</li>
       </ul>
-    </div>
+    </div> -->
 
     <div class="cascad-menu" ref="cascadMenu" v-if="dataList!=[]">
       <scroll-view class="left-menu" scroll-y>
@@ -45,7 +45,7 @@
         </div>
       </scroll-view>
     </div>
-    <sec-footer :tabarA="a"></sec-footer>
+    <sec-footer :tabarA="a" :cartnum="cartnum"></sec-footer>
   </div>
 </template>
 
@@ -56,8 +56,9 @@ export default {
   data() {
     return {
       a:1,
+      cartnum:0,
       // title: ["精品", "拼团", "拿货团"],
-      title: ["精品", "拼团"],
+      // title: ["精品", "拼团"],
       activeT: 0,
       active: 0,
       dataList: [],
@@ -88,7 +89,8 @@ export default {
     if (wx.getStorageSync("user")) {
       this.cid = JSON.parse(wx.getStorageSync("user")).cid;
       if (this.cid != undefined) {
-        this.$api.getnum(this.cid);
+        this.getnum(this.cid)
+        // this.cartnum=wx.getStorageSync()
       }
     }
   },
@@ -101,6 +103,17 @@ export default {
     };
   },
   methods: {
+     getnum(cid) {
+      let parmas = {
+        cmd: "cartCount",
+        cid: cid,
+        flag: "1"
+      };
+      Request.noLoading(parmas).then(res => {
+        console.log(res);
+        this.cartnum = res.totalCount;
+      });
+    },
     //   切换数据前  清空  记录
     changactive(ind) {
       if (this.activeT == ind) {
@@ -345,7 +358,7 @@ page {
   justify-content: space-between;
   width: 100%;
   height: 100%;
-  padding-top: 60px;
+  padding-top:10px;
 
   .left-menu {
     width: 150px;

@@ -8,7 +8,7 @@
         <span>没有更多了</span>
       </div>
     </div>
-    <sec-footer :tabarA="a"></sec-footer>
+    <sec-footer :tabarA="a" :cartnum="cartnum"></sec-footer>
   </div>
 </template>
 
@@ -30,7 +30,8 @@ export default {
       gou: 0,
       center: {},
       totalPage: 1,
-      more: false
+      more: false,
+      cartnum:0,
     };
   },
   components: {
@@ -52,6 +53,7 @@ export default {
   mounted() {
       if(wx.getStorageSync("user")){
       this.cid = JSON.parse(wx.getStorageSync("user")).cid;
+      this.getnum(this.cid);
     }
     if (this.center != {}) {
       this.nearbyShop();
@@ -66,6 +68,17 @@ export default {
     }
   },
   methods: {
+        getnum(cid) {
+      let parmas = {
+        cmd: "cartCount",
+        cid: cid,
+        flag: "1"
+      };
+      Request.noLoading(parmas).then(res => {
+        console.log(res);
+        this.cartnum = res.totalCount;
+      });
+    },
     nearbyShop() {
       // this.donghua = true;
       this.pointyin = false;

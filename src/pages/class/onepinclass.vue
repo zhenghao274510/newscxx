@@ -12,21 +12,21 @@
       >
         <van-tab title="综合排序">
           <!-- <van-pull-refresh v-model="isLoading" @refresh="onRefresh"> -->
-          <recommendfen :recommend="list"></recommendfen>
+          <recommendfen :recommend="list" ></recommendfen>
           <!-- </van-pull-refresh> -->
         </van-tab>
         <van-tab title="好评优先">
           <!-- <van-pull-refresh v-model="isLoading" @refresh="onRefresh"> -->
-          <recommendfen :recommend="list"></recommendfen>
+          <recommendfen :recommend="list" ></recommendfen>
         </van-tab>
         <van-tab title="价格优先">
           <!-- <van-pull-refresh v-model="isLoading" @refresh="onRefresh"> -->
-          <recommendfen :recommend="list"></recommendfen>
+          <recommendfen :recommend="list" ></recommendfen>
           <!-- </van-pull-refresh> -->
         </van-tab>
         <van-tab title="销量优先">
           <!-- <van-pull-refresh v-model="isLoading" @refresh="onRefresh"> -->
-          <recommendfen :recommend="list"></recommendfen>
+          <recommendfen :recommend="list" ></recommendfen>
           <!-- </van-pull-refresh> -->
         </van-tab>
       </van-tabs>

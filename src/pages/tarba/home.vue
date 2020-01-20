@@ -42,7 +42,8 @@
           </div>
 
           <div class="navs">
-            <navs :datas="datas" :direct="direct"></navs>
+            <pintuan-nav :datas="datas" :direct="direct" v-if="direct==100"></pintuan-nav>
+            <navs :datas="datas" :direct="direct" v-else></navs>
           </div>
 
           <div class="slide-box">
@@ -51,7 +52,7 @@
               :title="title"
               v-if="cate1[active].name=='精品推荐'"
               :direct="direct"
-            ></discount>
+             @click="shopcart"></discount>
 
             <div class="list" v-else @click.stop>
               <h3 v-if="title">{{title1}}</h3>
@@ -61,9 +62,9 @@
                   v-for="(item,index) in dataList"
                   :key="index"
                   @click.stop="detail(item.id)"
-                  v-if="k<3"
+                  v-if="index<3"
                 >
-                  <img :src="item.image" alt lazy-load />
+                  <img :src="item.image" alt lazy-load class="img" />
                   <div class="list-content">
                     <div class="list-top">
                       <div class="list-title">{{item.name}}</div>
@@ -90,7 +91,7 @@
       </van-tabs>
     </div>
 
-    <sec-footer :tabarA="a"></sec-footer>
+    <sec-footer :tabarA="a" :cartnum="cartnum"></sec-footer>
   </div>
 </template>
 
@@ -102,6 +103,7 @@ import Recommendx from "@/components/recommendx";
 import Request from "@/common/js/request";
 import QQMapWX from "@/common/jsdk/qqmap-wx-jssdk";
 import secFooter from "@/components/SecFooter";
+import pintuanNav from "@/components/pintuannav";
 export default {
   data() {
     return {
@@ -129,7 +131,7 @@ export default {
       direct: 100,
       leader: {},
       fromid: "",
-      isload: 0
+      cartnum: 0
     };
   },
   onShareAppMessage() {
@@ -144,8 +146,6 @@ export default {
     wx.setNavigationBarTitle({
       title: "首页"
     });
-
-    this.diao();
     this.getCurLocation();
     this.qqMapSdk = new QQMapWX({
       key: "JYKBZ-NJNCU-GVDVC-B3RUD-AA5EH-3PFYT"
@@ -153,6 +153,9 @@ export default {
   },
   onShow() {
     this.active = 0;
+    this.clear();
+    this.diao();
+    // this.$store.commit("decrement",9);
     if (wx.getStorageSync("leaderInfo")) {
       this.leader = JSON.parse(wx.getStorageSync("leaderInfo"));
       console.log(this.leader);
@@ -160,9 +163,7 @@ export default {
     }
     if (wx.getStorageSync("user")) {
       this.cid = JSON.parse(wx.getStorageSync("user")).cid;
-      console.log(this.cid);
-      console.log(this.$api);
-      this.$api.getnum(this.cid);
+      this.getnum(this.cid);
     }
   },
   components: {
@@ -170,7 +171,8 @@ export default {
     Navs,
     Discount,
     Recommendx,
-    secFooter
+    secFooter,
+    pintuanNav
   },
   mounted() {},
   //  上拉触底 加载
@@ -184,13 +186,23 @@ export default {
     }
   },
   methods: {
+    getnum(cid) {
+      let parmas = {
+        cmd: "cartCount",
+        cid: cid,
+        flag: "1"
+      };
+      Request.noLoading(parmas).then(res => {
+        console.log(res);
+        this.cartnum = res.totalCount;
+      });
+    },
     getformid(e) {
       console.log(e);
       this.fromid = e.mp.detail.formId;
     },
     initLoad(id) {
       //处理初始化页面数据缓存开始
-       this.isload=0;
       let self = this;
       // console.log(id);
       let cateTAB = JSON.parse(wx.getStorageSync("cateTAB"));
@@ -199,42 +211,43 @@ export default {
           console.log(cateTAB[i]);
           self.direct = 0;
           this.showNav = true;
-          // if (cateTAB[i].list) {
-          //   self.datas = cateTAB[i].list.child;
-          //   self.images = cateTAB[i].list.rotationChart;
-          //   self.totalPage = cateTAB[i].list.totalPage;
-          //   self.recommendList = cateTAB[i].list.order;
-          //   self.dataList = cateTAB[i].list.discount;
-          // }
-          // else {
-          let datas = {
-            cmd: "recommendGoods",
-            id: id,
-            pageNow: self.page
-          };
-          Request.noLoading(datas)
-            .then(res => {
-             
-              console.log(res);
-              if (res.result == 0) {
-                cateTAB[i].list = {};
-                self.datas = res.child;
-                self.images = res.rotationChart;
-                self.totalPage = res.totalPage;
-                self.dataList = res.discount;
-                self.recommendList = res.order;
-                // cateTAB[i].list.child = res.child;
-                // cateTAB[i].list.rotationChart = res.rotationChart;
-                // cateTAB[i].list.totalPage = res.totalPage;
-                // cateTAB[i].list.discount = res.discount;
-                // cateTAB[i].list.order = res.order;
-                // wx.setStorageSync("cateTAB", JSON.stringify(cateTAB));
-              }
-            })
-            .catch(res => {});
-          // }
+          if (cateTAB[i].list) {
+            self.datas = cateTAB[i].list.child;
+            self.images = cateTAB[i].list.rotationChart;
+            self.totalPage = cateTAB[i].list.totalPage;
+            self.recommendList = cateTAB[i].list.order;
+            self.dataList = cateTAB[i].list.discount;
+          }else {
+          // setTimeout(() => {
+            let datas = {
+              cmd: "recommendGoods",
+              id: id,
+              pageNow: self.page
+            };
+            Request.noLoading(datas)
+              .then(res => {
+                console.log(res);
+                if (res.result == 0) {
+                  cateTAB[i].list = {};
+                  self.datas = res.child;
+                  self.images = res.rotationChart;
+                  self.totalPage = res.totalPage;
+                  self.dataList = res.discount;
+                  self.recommendList = res.order;
+                  cateTAB[i].list.child = res.child;
+                  cateTAB[i].list.rotationChart = res.rotationChart;
+                  cateTAB[i].list.totalPage = res.totalPage;
+                  cateTAB[i].list.discount = res.discount;
+                  cateTAB[i].list.order = res.order;
+                  wx.setStorageSync("cateTAB", JSON.stringify(cateTAB));
+                }
+              })
+              .catch(res => {});
+          // },30);
 
           // }
+
+          }
         } else if (id == cateTAB[i].type) {
           self.direct = id;
           this.showNav = false;
@@ -247,20 +260,10 @@ export default {
             .then(res => {
               console.log(res);
               if (res.result == 0) {
-                // cateTAB[i].list = {};
                 self.datas = res.child;
                 self.totalPage = res.totalPage;
                 self.dataList = res.discount;
                 self.recommendList = res.order;
-                //   console.log(self.dataList)
-                // if(res.discount!=[]){
-                // cateTAB[i].list.discount = res.discount;
-                // }
-                // cateTAB[i].list.child = res.child;
-                // cateTAB[i].list.totalPage = res.totalPage;
-
-                // cateTAB[i].list.order = res.order;
-                // wx.setStorageSync("cateTAB", JSON.stringify(cateTAB));
               }
             })
             .catch(res => {});
@@ -288,56 +291,53 @@ export default {
       }
     },
     diao() {
-      let datas = {
-        cmd: "goodsCategoryInit",
-        uid: ""
-      };
-      console.log(datas);
-      Request.noLoading(datas)
-        .then(res => {
-          if (res.result == 0) {
-            console.log(res);
-            this.cate1 = [
-              { type: "100", name: "社区团购" },
-              { id: "", name: "精品推荐" }
-            ];
-            // this.cate1 = [
-            //   { type: "100", name: "拼团" },
-            //   { type: "200", name: "拿货团" },
-            //   { id: "", name: "精品推荐" }
-            // ];
-            // let self=this;
-            for (let i in res.dataList) {
-              this.cate1.push(res.dataList[i]);
+      if (wx.getStorageSync("cateTAB")) {
+        this.cate1 = JSON.parse(wx.getStorageSync("cateTAB"));
+        this.id = this.cate1[0].type;
+        this.initLoad(this.id);
+      } else {
+        let datas = {
+          cmd: "goodsCategoryInit",
+          uid: ""
+        };
+        console.log(datas);
+        Request.noLoading(datas)
+          .then(res => {
+            if (res.result == 0) {
+              console.log(res);
+              this.cate1 = [
+                { type: "100", name: "社区团购" },
+                { id: "", name: "精品推荐" }
+              ];
+              // this.cate1 = [
+              //   { type: "100", name: "拼团" },
+              //   { type: "200", name: "拿货团" },
+              //   { id: "", name: "精品推荐" }
+              // ];
+              // let self=this;
+              for (let i in res.dataList) {
+                this.cate1.push(res.dataList[i]);
+              }
+              setTimeout(() => {
+                this.id = this.cate1[0].type;
+                this.initLoad(this.id);
+              }, 30);
+              wx.setStorageSync("cateTAB", JSON.stringify(this.cate1));
             }
-            setTimeout(() => {
-              this.id = this.cate1[0].type;
-              this.initLoad(this.id);
-            }, 30);
-            wx.setStorageSync("cateTAB", JSON.stringify(this.cate1));
-          }
-        })
-        .catch(res => {});
+          })
+          .catch(res => {});
+      }
+
       // }
     },
 
     getCurLocation() {
       let self = this;
-      wx.showLoading({
-        title: "定位中，请稍后..",
-        icon: "none"
-      });
-
       wx.getLocation({
         type: "gcj02",
         success(res) {
           console.log(res);
           wx.setStorageSync("point", JSON.stringify(res));
-          wx.hideLoading();
-          wx.showToast({
-            title: "定位成功",
-            icon: "none"
-          });
           // console.log(res);
           self.qqMapSdk.reverseGeocoder({
             location: {
@@ -436,32 +436,18 @@ export default {
       }
     },
     changeIng(k) {
-      console.log(k)
+      console.log(k);
       let ind = k.target.index;
-       this.active = ind;
+      this.active = ind;
       console.log(this.active);
-      if (this.isload == 0) {
-        this.isload=1;
-           this.clear();
-        if (this.cate1[ind].id != undefined) {
-          this.id = this.cate1[ind].id;
-          this.initLoad(this.id);
-        } else {
-          this.id = this.cate1[ind].type;
-          this.initLoad(this.cate1[ind].type);
-        }
+      this.clear();
+      if (this.cate1[ind].id != undefined) {
+        this.id = this.cate1[ind].id;
+        this.initLoad(this.id);
       } else {
-        return;
+        this.id = this.cate1[ind].type;
+        this.initLoad(this.cate1[ind].type);
       }
-      // if (this.cate1[ind].id != undefined) {
-      //   this.id = this.cate1[ind].id;
-      //   // this.initLoad(this.id);
-      // } else {
-      //   // this.id = this.cate1[ind].type;
-      //   this.initLoad(this.cate1[ind].type);
-      // }
-      // this.initLoad(this.id);
-      // console.log(this.id);
     },
     goSearch() {
       this.$router.push("/pages/search/index");
@@ -530,7 +516,7 @@ export default {
     },
     //
     detail(k) {
-      console.log(k);
+      console.log("home");
       let obj = {};
       obj.id = k;
       if (this.direct == 100) {
@@ -554,7 +540,7 @@ export default {
     },
     //购物车图标
     shopcart(v) {
-      console.log(1);
+      console.log("home");
       if (this.cid == undefined || this.cid == "") {
         this.nouser();
       } else {
@@ -579,6 +565,10 @@ export default {
           .catch(res => {});
       }
     }
+  },
+  onHide() {
+    wx.removeStorageSync("cateTAB");
+    console.log("onUnload");
   }
 };
 </script>
@@ -627,16 +617,16 @@ page {
 
     // background:#eee;
     li {
-      width: 100%;
+      width: 90%;
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin: 0 auto;
       border-bottom: 1px solid #eee;
 
-      img {
+      .img {
         width: 2.5rem;
-        height: 1.25rem;
+        height: 2.5rem;
       }
 
       .list-content {
@@ -692,8 +682,8 @@ page {
           }
 
           img {
-            width: 0.5rem;
-            height: 0.5rem;
+            width: 0.4rem;
+            height: 0.4rem;
           }
         }
       }

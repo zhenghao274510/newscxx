@@ -35,10 +35,15 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      cid:''
+    };
   },
-  onLoad() {
-    this.cid = JSON.parse(wx.getStorageSync("user")).cid;
+  onLoad() {},
+  onShow() {
+    if (wx.getStorageSync("user")) {
+      this.cid = JSON.parse(wx.getStorageSync("user")).cid;
+    }
   },
   methods: {
     goDetail(id) {

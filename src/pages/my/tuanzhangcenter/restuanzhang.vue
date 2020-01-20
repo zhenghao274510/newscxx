@@ -5,7 +5,7 @@
       <ul class="star">
         <li>
           <span>小区名称：</span>
-          <input type="text" v-model="neighbourhood" focus placeholder="请输入小区名称"  />
+          <input type="text" v-model="neighbourhood" focus placeholder="请输入小区名称" />
         </li>
         <li>
           <span>小区地址：</span>
@@ -14,23 +14,34 @@
         </li>
         <div class="noplay">
           <span>详细地址：</span>
-          <input type="text" v-model="addressDetials" placeholder="请输入详细地址"/>
+          <input type="text" v-model="addressDetials" placeholder="请输入详细地址" />
         </div>
+
+        <!-- 新增 -->
+        <li>
+          <span>服务经理邀请码：</span>
+          <input type="text" v-model="invertCode" placeholder="请输入邀请码" />
+        </li>
+        <div class="noInverCode">
+          注：没有邀请码，选择一个
+          <i style="color:#006EE3" @click="choseServce">服务经理</i>
+        </div>
+
         <li>
           <span>团长昵称：</span>
-          <input type="text" v-model="nickname" placeholder="请输入团长昵称"  />
+          <input type="text" v-model="nickname" placeholder="请输入团长昵称" />
         </li>
         <li>
           <span>真实姓名：</span>
-          <input type="text" v-model="name" placeholder="请输入您的真实姓名"  />
+          <input type="text" v-model="name" placeholder="请输入您的真实姓名" />
         </li>
         <li>
           <span>联系方式：</span>
-          <input type="number" v-model="phone" placeholder="请输入您的联系方式"  />
+          <input type="number" v-model="phone" placeholder="请输入您的联系方式" />
         </li>
         <li>
           <span>身份证号：</span>
-          <input type="idcard" v-model="idcard" placeholder="请输入您的身份证号"  />
+          <input type="idcard" v-model="idcard" placeholder="请输入您的身份证号" />
         </li>
       </ul>
       <div class="persion">
@@ -85,7 +96,7 @@ import QQMapWX from "@/common/jsdk/qqmap-wx-jssdk";
 export default {
   data() {
     return {
-      focus:false,
+      focus: false,
       check: false,
       neighbourhood: "", //  小区名称
       address: "", // 小区地址
@@ -102,7 +113,8 @@ export default {
       positive: "", //  反面
       negative: "", //正面
       inhand: "", //  手照
-      qqMapSdk: ""
+      qqMapSdk: "",
+      invertCode: ""
     };
   },
   onLoad() {
@@ -126,12 +138,20 @@ export default {
       this.address = adduser.add;
       console.log(adduser);
     }
+    if (wx.getStorageSync("servce")) {
+      this.invertCode = JSON.parse(wx.getStorageSync("servce")).invertCode;
+    }
   },
   onHide() {
     wx.removeStorageSync("adduser");
   },
   //方法集合
   methods: {
+    choseServce() {
+      wx.navigateTo({
+        url: "/pages/my/tuanzhangcenter/serverLinged"
+      });
+    },
     choseAddress() {
       console.log(11);
       wx.navigateTo({
@@ -246,6 +266,11 @@ export default {
           title: "请勾选用户协议",
           icon: "none"
         });
+      } else if ((this.inviteCode = "")) {
+        wx.showToast({
+          title: "服务经理邀请码",
+          icon: "none"
+        });
       } else {
         //   用户手动输入地址   获取   经纬度
         if (this.lon == "" || this.lat == "") {
@@ -278,7 +303,8 @@ export default {
                   positive: self.positive,
                   negative: self.negative,
                   inhand: self.inhand,
-                  phone: self.phone
+                  phone: self.phone,
+                  inviteCode: this.inviteCode
                 };
                 console.log(parmas);
                 self.http(parmas);
@@ -303,7 +329,8 @@ export default {
             positive: this.positive,
             negative: this.negative,
             inhand: this.inhand,
-            phone: this.phone
+            phone: this.phone,
+            inviteCode: this.inviteCode
           };
           console.log(parmas);
           this.http(parmas);
@@ -316,9 +343,9 @@ export default {
           let self = this;
           if (res.result == 0) {
             wx.showToast({
-              title:"你的审核已提交,请耐心等待!",
-              icon:"none"
-            })
+              title: "你的审核已提交,请耐心等待!",
+              icon: "none"
+            });
             console.log(res);
             self.$router.replace("/pages/my/tuanzhangcenter/shenhetijiao");
           } else {
@@ -363,14 +390,22 @@ export default {
 };
 </script>
 <style scoped lang="stylus">
-textarea{
-  position:absolute;
-  top:0;
-  left:0;
-  opacity:0;
-  height:358px;
-  z-index:0;
+.noInverCode {
+  color: #333333;
+  font-size: 12px;
+  line-height: 25px;
+  margin: 10px 0;
 }
+
+textarea {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  height: 358px;
+  z-index: 0;
+}
+
 .button {
   padding: 0 5px;
   box-sizing: border-box;

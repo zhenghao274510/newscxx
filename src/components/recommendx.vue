@@ -12,7 +12,7 @@
             <span v-if="v.price!==undefined">￥{{v.price}}</span>
             <s v-if="v.discount==1">￥{{v.originalPrice}}</s>
           </div>
-          <img src="/static/img/gouwuche2.png" alt @click.stop="shopcart(v)" />
+          <img src="/static/img/gouwuche2.png" alt @click.stop="shopcart(v)" v-if="direct!=100"/>
         </div>
       </li>
     </ul>
@@ -69,6 +69,7 @@ export default {
       }
     },
     shopcart(v) {
+      console.log("recommendx")
       if (this.cid == undefined || this.cid=="") {
         console.log(this.cid, 31);
         wx.showModal({

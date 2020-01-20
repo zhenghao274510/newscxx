@@ -1,20 +1,30 @@
 <template>
   <div class="contain">
     <div class="box">
-      <h3>收货人信息</h3>
-      <div class="user_box" @click="shouhuo" v-if="addchu==false">
-        <div class="user_left">
-          <div class="user_name">
-            <span>{{addcity.receiverName}}</span>
-            <span style="margin-left: 0.4rem;">{{addcity.mobile}}</span>
+      <div class="box-left">
+        <h3>收货人信息</h3>
+        <div class="user_box" @click="shouhuo" v-if="addchu==false">
+          <div class="user_left">
+            <div class="user_name">
+              <span>{{addcity.receiverName}}</span>
+              <span style="margin-left: 0.4rem;">{{addcity.mobile}}</span>
+            </div>
+            <p>{{addcity.addr}}</p>
           </div>
-          <p>{{addcity.addr}}</p>
+          <img src="/static/img/gengduo3.png" alt />
         </div>
-        <img src="/static/img/gengduo3.png" alt />
+        <div v-else class="user_box nouser" @click="shouhuo" style="lineHeight:70px">
+          <div class="user_left">去选择收货地址</div>
+          <img src="/static/img/gengduo3.png" alt />
+        </div>
       </div>
-      <div v-else class="user_box nouser" @click="shouhuo" style="lineHeight:70px">
-        <div class="user_left">去选择收货地址</div>
-        <img src="/static/img/gengduo3.png" alt />
+      <!-- 新增 -->
+      <div class="box-right" @click.stop="chosetuan">
+        <div style="padding-left:10px;">
+          <span>团长</span>
+          <p v-if="leaderid!=''">{{leader.name}}</p>
+          <p v-else>选择团长</p>
+        </div>
       </div>
     </div>
     <div class="go_shop">
@@ -95,7 +105,10 @@ export default {
       orderid: "",
       openId: "",
       direct: 0,
-      sname: ""
+      sname: "",
+      leaderid: "",
+      leader:{}
+
     };
   },
   components: {},
@@ -126,6 +139,11 @@ export default {
       console.log(this.addcity);
     } else {
       this.defaultAddress(this.cid);
+    }
+    if (wx.getStorageSync("leaderInfo")) {
+      this.leader = JSON.parse(wx.getStorageSync("leaderInfo"));
+      this.leaderid = this.leader.leaderid;
+      console.log(this.leader);
     }
     //   获取发票
     if (wx.getStorageSync("Invoice")) {
@@ -160,7 +178,7 @@ export default {
     }
   },
   mounted() {
-    console.log("mounted")
+    console.log("mounted");
     if (wx.getStorageSync("direct")) {
       this.direct = JSON.parse(wx.getStorageSync("direct")).direct;
       wx.removeStorageSync("direct");
@@ -177,6 +195,11 @@ export default {
     }
   },
   methods: {
+    chosetuan() {
+      wx.navigateTo({
+        url: "/pages/my/tuanzhangcenter/choseLeader"
+      });
+    },
     onChange(e) {
       console.log(e);
       this.texts = e.mp.detail.text;
@@ -195,10 +218,10 @@ export default {
         sid: this.currentGood.sid,
         pageNow: 1
       };
-      console.log(datas)
+      console.log(datas);
       Request.postRequest(datas)
         .then(res => {
-          console.log(res.dataList)
+          console.log(res.dataList);
           if (res.result == 0) {
             let arrcon = [];
             for (let x in res.dataList) {
@@ -206,18 +229,18 @@ export default {
                 arrcon.push(res.dataList[x]);
               }
             }
-            console.log(arrcon)
+            console.log(arrcon);
             if (arrcon.length >= 2) {
-              let hand=0;
+              let hand = 0;
               for (let h = 0; h < arrcon.length - 1; h++) {
-                  if (arrcon[h + 1].amount >= arrcon[h].amount) {
-                     hand = arrcon[h + 1];
-                  }
+                if (arrcon[h + 1].amount >= arrcon[h].amount) {
+                  hand = arrcon[h + 1];
+                }
               }
-              console.log(hand)
-               this.amount = hand.amount;
-                  this.youID = hand.id;
-                  this.youhuis = true;
+              console.log(hand);
+              this.amount = hand.amount;
+              this.youID = hand.id;
+              this.youhuis = true;
             } else if (arrcon.length == 1) {
               this.amount = arrcon[0].amount;
               this.youID = arrcon[0].id;
@@ -329,7 +352,8 @@ export default {
           // amount: "0.01",
           couponId: shopa.couponId,
           invoiceId: shopa.invoiceId,
-          remark: shopa.remark
+          remark: shopa.remark,
+          leaderid:this.leaderid
         };
         console.log(objsh);
         Request.postRequest(objsh)
@@ -343,7 +367,7 @@ export default {
                 cmd: "payByWx",
                 orderid: this.orderid,
                 openid: this.openId,
-                 money: this.endPrice
+                money: this.endPrice
                 //   总价
                 // money: "0.01"
               };
@@ -383,7 +407,7 @@ export default {
             path: "/pages/order/pay_success",
             query: { id: self.direct }
           });
-          console.log("支付成功!"+self.direct);
+          console.log("支付成功!" + self.direct);
         },
         fail(res) {
           console.log("交易失败!");
@@ -412,67 +436,99 @@ export default {
 .box {
   width: 100%;
   display: flex;
-  flex-direction: column;
-  padding: 0 0.4rem 0;
+  justify-content: space-between;
+  padding: 0 0.2rem 0;
   box-sizing: border-box;
   border-top: 1px solid #eee;
 
-  h3 {
-    width: 100%;
-    height: 0.8rem;
-    line-height: 0.8rem;
-    font-size: 14px;
-    color: #333;
-    border-bottom: 1px solid #eee;
-  }
+  .box-left {
+    width: 75%;
 
-  .nouser {
-    height: 70px;
-    box-sizing: border-box;
-  }
-
-  .user_box {
-    width: 100%;
-    // height:70px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-
-    .user_left {
-      width: 80%;
-      display: flex;
-      flex-direction: column;
+    h3 {
+      width: 100%;
+      height: 35px;
+      line-height: 35px;
       font-size: 14px;
       color: #333;
-
-      p {
-        width: 100%;
-        text-overflow: -o-ellipsis-lastline;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        font-weight: 700;
-        font-size: 14px;
-        -webkit-box-orient: vertical;
-        line-height: 20px;
-        // padding-top: 0.3rem;
-      }
-
-      .user_name {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        padding: 0.1rem 0;
-        color: #333;
-        font-size: 14px;
-      }
+      border-bottom: 1px solid #eee;
     }
 
-    img {
-      width: 0.2rem;
-      height: 0.3rem;
+    .nouser {
+      height: 70px;
+      box-sizing: border-box;
+    }
+
+    .user_box {
+      width: 100%;
+      // height:70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+
+      .user_left {
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        font-size: 14px;
+        color: #333;
+
+        p {
+          width: 100%;
+          text-overflow: -o-ellipsis-lastline;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          font-weight: 500;
+          font-size: 13px;
+          -webkit-box-orient: vertical;
+          line-height: 20px;
+          // padding-top: 0.3rem;
+        }
+
+        .user_name {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          padding: 0.1rem 0;
+          font-size: 14px;
+          color: #333;
+          box-sizing: border-box;
+        }
+      }
+
+      img {
+        width: 11px;
+        height: 11px;
+      }
+    }
+  }
+
+  .box-right {
+    width: 25%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 15px;
+
+    div {
+      border-left: 1px solid #eee;
+
+      span {
+        display: block;
+        padding: 3px 7px;
+        font-size: 12px;
+        background: rgb(114, 209, 65);
+        color: #fff;
+        text-align: center;
+      }
+
+      p {
+        font-size: 13px;
+        text-align: center;
+        margin-top: 10px;
+      }
     }
   }
 }
